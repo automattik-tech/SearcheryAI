@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic Explorer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .input-group .btn {
+            border-radius: 0 30px 30px 0;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .btn-warning {
+            background-color: #ffb84d;
+            border-color: #ffb84d;
+            color: #fff;
+        }
+
+        .btn-warning:hover {
+            background-color: #ff9933;
+            border-color: #ff9933;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .btn-info {
+            background-color: #17a2b8;
+            border-color: #17a2b8;
+            color: white;
+        }
+
+        h2 {
+            margin-top: 40px;
+            color: #343a40;
+        }
+
+        .list-group-item {
+            background-color: #f0f8ff;
+            border: none;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .list-group-item p {
+            margin: 0;
+        }
+
+        .list-group-item strong {
+            color: #007bff;
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Container -->
+    <div class="container mt-5">
+        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="header-image">
+
+        <!-- File Upload Form -->
+        <form method="post" action="/upload" enctype="multipart/form-data" class="mt-4">
+            <div class="input-group mb-3">
+                <input type="file" name="file" class="form-control" accept=".pdf,.docx,.txt,.png" required aria-label="File upload">
+                <div class="input-group-append">
+                    <input type="submit" class="btn btn-warning" value="Upload">
+                </div>
+            </div>
+        </form>
+
+        <!-- Add this button below the file upload form -->
+        <a href="/uploaded-files" class="btn btn-info mt-4">View Uploaded Files</a>
+
+
+
+        <!-- Placeholder for Uploaded Files List -->
+        <ul id="files-list" class="list-group mt-3" style="display: none;"></ul>
+
+        <!-- Search Form -->
+        <form method="post" action="/search" class="mt-4">
+            <div class="input-group mb-3">
+                <input type="text" name="query" class="form-control" placeholder="Enter your search query..." required aria-label="Search query">
+                <div class="input-group-append">
+                    <input type="submit" class="btn btn-primary" value="Search">
+                </div>
+            </div>
+        </form>
+
+        <!-- Question Asking Form -->
+        <form method="post" action="/ask" class="mt-4">
+            <div class="input-group mb-3">
+                <input type="text" name="question" class="form-control" placeholder="Ask a question..." required aria-label="Question">
+                <div class="input-group-append">
+                    <input type="submit" class="btn btn-success" value="Ask">
+                </div>
+            </div>
+        </form>
+
+        <!-- Search Results Section -->
+        {% if query %}
+            <h2>Results for "{{ query }}":</h2>
+            <ul class="list-group">
+                {% for snippet, filename in snippets %}
+                    <li class="list-group-item">
+                        <strong>Document: <a href="/files/{{ filename }}" target="_blank">{{ filename }}</a></strong>
+                        <p>{{ snippet | safe }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Question Answer Results Section -->
+        {% if question %}
+            <h2>Answers to "{{ question }}":</h2>
+            <ul class="list-group">
+                {% for snippet, filename in snippets %}
+                    <li class="list-group-item">
+                        <strong>Document: <a href="/files/{{ filename }}" target="_blank">{{ filename }}</a></strong>
+                        <p>{{ snippet | safe }}</p>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script>
+        document.getElementById('toggle-files-button').addEventListener('click', function() {
+            const filesList = document.getElementById('files-list');
+            if (filesList.style.display === 'none') {
+                fetch('/files')
+                    .then(response => response.json())
+                    .then(data => {
+                        filesList.style.display = 'block';
+                        filesList.innerHTML = '';
+                        data.forEach(file => {
+                            const listItem = document.createElement('li');
+                            listItem.className = 'list-group-item';
+                            const link = document.createElement('a');
+                            link.href = `/files/${file}`;
+                            link.textContent = file;
+                            link.target = '_blank';
+                            listItem.appendChild(link);
+                            filesList.appendChild(listItem);
+                        });
+                        this.textContent = 'Hide Uploaded Files';
+                    });
+            } else {
+                filesList.style.display = 'none';
+                this.textContent = 'Show Uploaded Files';
+            }
+        });
+    </script>
+</body>
+</html>

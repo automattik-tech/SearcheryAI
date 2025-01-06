@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uploaded Files</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .container {
+            max-width: 800px;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .list-group-item {
+            background-color: #f0f8ff;
+            border: none;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            padding: 20px;
+            background-color: #343a40;
+            color: white;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Uploaded Files</h1>
+        <ul class="list-group mt-4">
+            {% for file in filenames %}
+                <li class="list-group-item">
+                    <a href="/files/{{ file }}" target="_blank">{{ file }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+        <footer>
+            <a href="/" class="btn btn-primary mt-4">Back to Home</a>
+        </footer>
+    </div>
+</body>
+</html>
