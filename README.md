@@ -7,7 +7,7 @@ Python 3.10+
 First clone the repository
 ##
     git clone https://github.com/automattik-tech/SearcheryAI
-    cd Searchery AI
+    cd SearcheryAI
 To install the dependencies on Linux and Mac, run the install script by typing ./install.sh into your 
 terminal.
 ##
