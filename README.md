@@ -8,7 +8,7 @@ First clone the repository
 ##
     git clone https://github.com/automattik-tech/SearcheryAI
     cd SearcheryAI
-To install the dependencies on Linux and Mac, run the install script by typing ./install.sh into your 
+To install the dependencies on Linux run the install script by typing ./install.sh into your 
 terminal.
 ##
     ./install.sh
@@ -18,4 +18,11 @@ On Windows type the following command
     pip install -r .\requirements.txt
    
 
-To run the website type the following command: python3 app.py
+To run the website type the following command
+
+Windows:
+##
+    python app.py
+Linux:
+## 
+    python3 app.py
