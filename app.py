@@ -98,7 +98,9 @@ def upload_file():
 @app.route('/search', methods=['POST'])
 def search():
     query = request.form['query']
-    query_embedding = model.encode([query])
+    query_embedding = model.encode([query])  # Pass query as a list (ensures 2D array)
+    query_embedding = query_embedding.reshape(1, -1)  # Ensure it's a 2D array (1xN)
+
     similarity = cosine_similarity(query_embedding, document_embeddings)
     results = np.argsort(similarity[0])[::-1][:5]
 
@@ -111,7 +113,9 @@ def ask():
     question = request.form['question']
     answers = []
 
-    query_embedding = model.encode([question])
+    query_embedding = model.encode([question])  # Pass question as a list (ensures 2D array)
+    query_embedding = query_embedding.reshape(1, -1)  # Ensure it's a 2D array (1xN)
+
     similarity = cosine_similarity(query_embedding, document_embeddings)
     results = np.argsort(similarity[0])[::-1][:5]
     context = " ".join([documents[index] for index in results])
@@ -138,7 +142,6 @@ def list_files():
 @app.route('/uploaded-files')
 def uploaded_files():
     return render_template('uploaded_files.html', filenames=filenames)
-
 
 if __name__ == '__main__':
     app.run(debug=True)
