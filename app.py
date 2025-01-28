@@ -17,7 +17,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def load_documents_from_files(upload_folder):
+def load_documents_from_files(upload_folder):   
     documents = []
     filenames = []
     for filename in os.listdir(upload_folder):

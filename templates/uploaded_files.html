@@ -82,7 +82,7 @@
         }
     </style>
     <script>
-        async function deleteFile(filename) {
+        async function deleteFile(filename) { /* delete file js*/ 
             if (confirm(`Are you sure you want to delete "${filename}"?`)) {
                 const response = await fetch(`/delete/${filename}`, { method: 'POST' });
                 const result = await response.json();
