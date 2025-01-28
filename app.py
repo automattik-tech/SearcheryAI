@@ -143,5 +143,20 @@ def list_files():
 def uploaded_files():
     return render_template('uploaded_files.html', filenames=filenames)
 
+@app.route('/delete/<filename>', methods=['POST'])
+def delete_file(filename):
+    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    if os.path.exists(file_path):
+        os.remove(file_path)
+        global documents, document_embeddings, filenames
+        documents, filenames = load_documents_from_files(UPLOAD_FOLDER)
+        document_embeddings = model.encode(documents)
+        return jsonify({'success': True, 'message': f'{filename} deleted successfully'})
+    return jsonify({'success': False, 'message': f'{filename} not found'}), 404
+
+@app.route('/favicon.ico')
+def favicon():
+    return url_for('static', filename='images/favicon.ico')
+
 if __name__ == '__main__':
     app.run(debug=True)
