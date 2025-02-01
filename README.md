@@ -8,6 +8,20 @@ First clone the repository
 ##
     git clone https://github.com/automattik-tech/SearcheryAI
     cd SearcheryAI
+
+Optional: Create a virtual environment to install all the dependencies.
+Windows
+##
+    python -m venv env
+    .\env\Scripts\activate
+
+Linux
+##
+    python -m venv env
+    source env/bin/activate
+Then run the install script
+
+
 To install the dependencies on Linux run the install script by typing ./install.sh into your 
 terminal.
 ##
