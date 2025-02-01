@@ -10,6 +10,7 @@ First clone the repository
     cd SearcheryAI
 
 Optional: Create a virtual environment to install all the dependencies.
+
 Windows
 ##
     python -m venv env
