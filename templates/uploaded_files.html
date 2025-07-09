@@ -3,113 +3,574 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Uploaded Files</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <title>Uploaded Files - Searchery AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #06b6d4;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f0f4f8;
-            color: #333;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
-            max-width: 800px;
-            background: #ffffff;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
         }
 
-        h1 {
-            font-weight: 700;
-            color: #2c3e50;
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
         }
 
-        .list-group-item {
-            background-color: #eaf2f8;
-            border: none;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-        }
-
-        .list-group-item a {
-            text-decoration: none;
-            color: #007bff;
-            font-weight: 500;
-        }
-
-        .list-group-item a:hover {
-            color: #0056b3;
-        }
-
-        .delete-btn {
-            background-color: #e74c3c;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        .delete-btn:hover {
-            background-color: #c0392b;
-        }
-
-        footer {
-            margin-top: 50px;
+        .header {
             text-align: center;
-            padding: 20px;
-            background-color: #2c3e50;
-            color: #ffffff;
-            border-radius: 8px;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+        }
+
+        .title-icon {
+            font-size: 2rem;
+            color: var(--primary);
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            font-weight: 400;
+        }
+
+        .files-grid {
+            display: grid;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .file-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .file-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        .file-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+
+        .file-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+
+        .file-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .file-name {
+            font-weight: 600;
+            color: var(--gray-800);
+            text-decoration: none;
+            font-size: 1.125rem;
+            margin-bottom: 0.25rem;
+            display: block;
+            transition: color 0.3s ease;
+            word-break: break-all;
+        }
+
+        .file-name:hover {
+            color: var(--primary);
+        }
+
+        .file-type {
+            font-size: 0.875rem;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger), #dc2626);
+            color: white;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
         }
 
         .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: var(--shadow-md);
+            padding: 1rem 2rem;
+            font-size: 1rem;
         }
 
         .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 2rem;
+            opacity: 0.3;
+        }
+
+        .empty-state-text {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--gray-600);
+        }
+
+        .empty-state-subtext {
+            font-size: 1rem;
+            opacity: 0.7;
+            margin-bottom: 2rem;
+        }
+
+        .footer {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 2px solid var(--gray-100);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-up {
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .main-card {
+                padding: 2rem;
+                border-radius: 16px;
+            }
+
+            .title {
+                font-size: 2rem;
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .file-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .file-actions {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .file-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: var(--gray-50);
+            border-radius: 12px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: block;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray-600);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 500;
         }
     </style>
+</head>
+<body>
+    <div class="background-overlay"></div>
+    
+    <div class="container">
+        <div class="main-card fade-in">
+            <div class="header">
+                <h1 class="title">
+                    <i class="fas fa-folder-open title-icon"></i>
+                    Uploaded Files
+                </h1>
+                <p class="subtitle">Manage your document library</p>
+            </div>
+
+            {% if filenames %}
+            <div class="file-stats">
+                <div class="stat-item">
+                    <span class="stat-number">{{ filenames|length }}</span>
+                    <span class="stat-label">Total Files</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ (filenames|selectattr('endswith', '.pdf')|list)|length }}</span>
+                    <span class="stat-label">PDF Files</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number">{{ (filenames|selectattr('endswith', '.docx')|list)|length }}</span>
+                    <span class="stat-label">Word Docs</span>
+                </div>
+            </div>
+
+            <div class="files-grid">
+                {% for file in filenames %}
+                <div class="file-card slide-up">
+                    <div class="file-icon">
+                        {% if file.endswith('.pdf') %}
+                            <i class="fas fa-file-pdf"></i>
+                        {% elif file.endswith('.docx') %}
+                            <i class="fas fa-file-word"></i>
+                        {% elif file.endswith('.txt') %}
+                            <i class="fas fa-file-alt"></i>
+                        {% elif file.endswith('.png') %}
+                            <i class="fas fa-file-image"></i>
+                        {% else %}
+                            <i class="fas fa-file"></i>
+                        {% endif %}
+                    </div>
+                    <div class="file-info">
+                        <a href="/files/{{ file }}" target="_blank" class="file-name">{{ file }}</a>
+                        <div class="file-type">
+                            {% if file.endswith('.pdf') %}
+                                PDF Document
+                            {% elif file.endswith('.docx') %}
+                                Word Document
+                            {% elif file.endswith('.txt') %}
+                                Text File
+                            {% elif file.endswith('.png') %}
+                                PNG Image
+                            {% else %}
+                                Unknown Type
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="file-actions">
+                        <button class="btn btn-danger" onclick="deleteFile('{{ file }}')">
+                            <i class="fas fa-trash"></i>
+                            Delete
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <div class="empty-state-text">No files uploaded yet</div>
+                <div class="empty-state-subtext">Upload your first document to get started with AI-powered search</div>
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-upload"></i>
+                    Upload Files
+                </a>
+            </div>
+            {% endif %}
+
+            <div class="loading" id="loadingState">
+                <div class="spinner"></div>
+                <p>Processing request...</p>
+            </div>
+
+            <div class="footer">
+                <a href="/" class="btn btn-primary">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Search
+                </a>
+            </div>
+        </div>
+    </div>
+
     <script>
-        async function deleteFile(filename) { /* delete file js*/ 
+        async function deleteFile(filename) {
             if (confirm(`Are you sure you want to delete "${filename}"?`)) {
-                const response = await fetch(`/delete/${filename}`, { method: 'POST' });
-                const result = await response.json();
-                if (result.success) {
-                    alert(result.message);
-                    location.reload();
-                } else {
-                    alert(result.message);
+                const loadingState = document.getElementById('loadingState');
+                loadingState.classList.add('show');
+                
+                try {
+                    const response = await fetch(`/delete/${filename}`, { method: 'POST' });
+                    const result = await response.json();
+                    
+                    if (result.success) {
+                        // Show success message
+                        const successMsg = document.createElement('div');
+                        successMsg.style.cssText = `
+                            position: fixed;
+                            top: 20px;
+                            right: 20px;
+                            background: linear-gradient(135deg, var(--success), #059669);
+                            color: white;
+                            padding: 1rem 1.5rem;
+                            border-radius: 12px;
+                            box-shadow: var(--shadow-lg);
+                            z-index: 1000;
+                            animation: slideUp 0.3s ease-out;
+                        `;
+                        successMsg.innerHTML = `<i class="fas fa-check"></i> ${result.message}`;
+                        document.body.appendChild(successMsg);
+                        
+                        setTimeout(() => {
+                            successMsg.remove();
+                            location.reload();
+                        }, 2000);
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    // Show error message
+                    const errorMsg = document.createElement('div');
+                    errorMsg.style.cssText = `
+                        position: fixed;
+                        top: 20px;
+                        right: 20px;
+                        background: linear-gradient(135deg, var(--danger), #dc2626);
+                        color: white;
+                        padding: 1rem 1.5rem;
+                        border-radius: 12px;
+                        box-shadow: var(--shadow-lg);
+                        z-index: 1000;
+                        animation: slideUp 0.3s ease-out;
+                    `;
+                    errorMsg.innerHTML = `<i class="fas fa-exclamation-triangle"></i> ${error.message}`;
+                    document.body.appendChild(errorMsg);
+                    
+                    setTimeout(() => {
+                        errorMsg.remove();
+                    }, 3000);
+                } finally {
+                    loadingState.classList.remove('show');
                 }
             }
         }
+
+        // Add staggered animation to file cards
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.file-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
     </script>
-</head>
-<body>
-    <div class="container mt-5">
-        <h1 class="text-center">Uploaded Files</h1>
-        <ul class="list-group mt-4">
-            {% for file in filenames %}
-                <li class="list-group-item">
-                    <a href="/files/{{ file }}" target="_blank">{{ file }}</a>
-                    <button class="delete-btn" onclick="deleteFile('{{ file }}')">Delete</button>
-                </li>
-            {% endfor %}
-        </ul>
-        <footer>
-            <a href="/" class="btn btn-primary mt-4">Back to Home</a>
-        </footer>
-    </div>
 </body>
 </html>

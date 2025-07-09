@@ -3,209 +3,711 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Searchery AI</title>
-    <!-- Bootstrap CSS -->
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
+    <title>Searchery AI - Intelligent Document Search</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-           body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #f0f4f8;
-            color: #333;
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --primary-light: #818cf8;
+            --secondary: #f59e0b;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --info: #06b6d4;
+            --dark: #1f2937;
+            --light: #f8fafc;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            background-color: #f8f9fa;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--gray-800);
+            line-height: 1.6;
+        }
+
+        .background-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
-            max-width: 800px;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-
-        .header-image { width: 350px; 
-            height: 250px; 
-            border-radius: 15px; margin: 30px auto; /* This centers the image */ 
-            display: block; /* Ensures the image is treated as a block element */ 
-            max-width: 100%; /* Makes the image responsive */ 
-            height: auto; /* Ensures the aspect ratio is maintained */ 
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
         }
 
-        .input-group .btn {
-            border-radius: 0 30px 30px 0;
-            font-weight: bold;
+        .main-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: var(--shadow-xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .main-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.25);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 24px;
+            margin: 0 auto 2rem;
+            display: block;
+            box-shadow: var(--shadow-lg);
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05) rotate(2deg);
+        }
+
+        .title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            font-weight: 400;
+        }
+
+        .form-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 0.5rem;
             text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
-        .btn-warning {
-            background-color: #0047AB;
-            border-color: #5D3FD3;
-            color: #fff;
+        .input-group {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: white;
+            border: 2px solid var(--gray-200);
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
 
-        .btn-warning:hover {
-            background-color: #0047AB;
-            border-color: #0047AB;
+        .input-group:hover {
+            border-color: var(--primary-light);
+            box-shadow: var(--shadow-md);
+        }
+
+        .input-group:focus-within {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 1rem 1.25rem;
+            border: none;
+            outline: none;
+            font-size: 1rem;
+            background: transparent;
+            color: var(--gray-800);
+        }
+
+        .form-input::placeholder {
+            color: var(--gray-400);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
         }
 
         .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .btn-success {
-            background-color: #28a745;
-            border-color: #28a745;
+            background: linear-gradient(135deg, var(--success), #059669);
             color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
 
         .btn-info {
-            background-color: #17a2b8;
-            border-color: #17a2b8;
+            background: linear-gradient(135deg, var(--info), #0891b2);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
             color: white;
         }
 
-        h2 {
-            margin-top: 40px;
-            color: #343a40;
-        }
-
-        .list-group-item {
-            background-color: #f0f8ff;
-            border: none;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .list-group-item p {
-            margin: 0;
-        }
-
-        .list-group-item strong {
-            color: #007bff;
-        }
-
-        footer {
-            margin-top: 50px;
+        .file-upload-area {
+            position: relative;
+            border: 2px dashed var(--gray-300);
+            border-radius: 16px;
+            padding: 2rem;
             text-align: center;
-            padding: 20px;
-            background-color: #343a40;
+            transition: all 0.3s ease;
+            background: var(--gray-50);
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.1);
+            transform: scale(1.02);
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            color: var(--gray-400);
+            margin-bottom: 1rem;
+        }
+
+        .file-upload-text {
+            font-size: 1.125rem;
+            color: var(--gray-600);
+            margin-bottom: 0.5rem;
+        }
+
+        .file-upload-subtext {
+            font-size: 0.875rem;
+            color: var(--gray-400);
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .results-section {
+            margin-top: 3rem;
+        }
+
+        .results-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gray-100);
+        }
+
+        .results-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .results-count {
+            background: var(--primary);
             color: white;
-            border-radius: 8px;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            font-weight: 600;
+        }
+
+        .result-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        }
+
+        .result-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary-light);
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.125rem;
+        }
+
+        .result-filename {
+            font-weight: 600;
+            color: var(--gray-800);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .result-filename:hover {
+            color: var(--primary);
+        }
+
+        .result-content {
+            color: var(--gray-600);
+            line-height: 1.7;
+        }
+
+        .result-content strong {
+            background: linear-gradient(135deg, var(--warning), #d97706);
+            color: white;
+            padding: 0.125rem 0.375rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--gray-200);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .slide-up {
+            animation: slideUp 0.4s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .main-card {
+                padding: 2rem;
+                border-radius: 16px;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 2rem;
+            color: var(--gray-500);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .empty-state-text {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .empty-state-subtext {
+            font-size: 0.875rem;
+            opacity: 0.7;
         }
     </style>
 </head>
 <body>
-
-    <!-- Main Container -->
-    <div class="container mt-5">
-        <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Logo" class="header-image">
-
-        <!-- File Upload Form -->
-        <form method="post" action="/upload" enctype="multipart/form-data" class="mt-4">
-            <div class="input-group mb-3">
-                <input type="file" name="file" class="form-control" accept=".pdf,.docx,.txt,.png" required aria-label="File upload">
-                <div class="input-group-append">
-                    <input type="submit" class="btn btn-warning" value="Upload">
-                </div>
+    <div class="background-overlay"></div>
+    
+    <div class="container">
+        <div class="main-card fade-in">
+            <div class="header">
+                <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Searchery AI Logo" class="logo">
+                <h1 class="title">Searchery AI</h1>
+                <p class="subtitle">Intelligent Document Search & Analysis</p>
             </div>
-        </form>
 
-        <!-- Add this button below the file upload form -->
-        <a href="/uploaded-files" class="btn btn-info mt-4">View Uploaded Files</a>
-
-
-
-        <!-- Placeholder for Uploaded Files List -->
-        <ul id="files-list" class="list-group mt-3" style="display: none;"></ul>
-
-        <!-- Search Form -->
-        <form method="post" action="/search" class="mt-4">
-            <div class="input-group mb-3">
-                <input type="text" name="query" class="form-control" placeholder="Enter your search query..." required aria-label="Search query">
-                <div class="input-group-append">
-                    <input type="submit" class="btn btn-primary" value="Search">
-                </div>
+            <!-- File Upload Section -->
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    Upload Documents
+                </label>
+                <form method="post" action="/upload" enctype="multipart/form-data" id="uploadForm">
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div class="file-upload-icon">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                        </div>
+                        <div class="file-upload-text">Drop files here or click to browse</div>
+                        <div class="file-upload-subtext">Supports PDF, DOCX, TXT, and PNG files</div>
+                        <input type="file" name="file" class="file-input" accept=".pdf,.docx,.txt,.png" required id="fileInput">
+                    </div>
+                    <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="fas fa-upload"></i>
+                            Upload File
+                        </button>
+                        <a href="/uploaded-files" class="btn btn-info">
+                            <i class="fas fa-folder-open"></i>
+                            View Files
+                        </a>
+                    </div>
+                </form>
             </div>
-        </form>
 
-        <!-- Question Asking Form -->
-        <form method="post" action="/ask" class="mt-4">
-            <div class="input-group mb-3">
-                <input type="text" name="question" class="form-control" placeholder="Ask a question..." required aria-label="Question">
-                <div class="input-group-append">
-                    <input type="submit" class="btn btn-success" value="Ask">
-                </div>
+            <!-- Search Section -->
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-search"></i>
+                    Search Documents
+                </label>
+                <form method="post" action="/search" id="searchForm">
+                    <div class="input-group">
+                        <input type="text" name="query" class="form-input" placeholder="Enter your search query..." required>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search"></i>
+                            Search
+                        </button>
+                    </div>
+                </form>
             </div>
-        </form>
 
-        <!-- Search Results Section -->
-        {% if query %}
-            <h2>Results for "{{ query }}":</h2>
-            <ul class="list-group">
-                {% for snippet, filename in snippets %}
-                    <li class="list-group-item">
-                        <strong>Document: <a href="/files/{{ filename }}" target="_blank">{{ filename }}</a></strong>
-                        <p>{{ snippet | safe }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+            <!-- Question Section -->
+            <div class="form-section">
+                <label class="form-label">
+                    <i class="fas fa-question-circle"></i>
+                    Ask Questions
+                </label>
+                <form method="post" action="/ask" id="askForm">
+                    <div class="input-group">
+                        <input type="text" name="question" class="form-input" placeholder="Ask a question about your documents..." required>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-brain"></i>
+                            Ask AI
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-        <!-- Question Answer Results Section -->
-        {% if question %}
-            <h2>Answers to "{{ question }}":</h2>
-            <ul class="list-group">
-                {% for snippet, filename in snippets %}
-                    <li class="list-group-item">
-                        <strong>Document: <a href="/files/{{ filename }}" target="_blank">{{ filename }}</a></strong>
-                        <p>{{ snippet | safe }}</p>
-                    </li>
-                {% endfor %}
-            </ul>
-        {% endif %}
+            <!-- Loading State -->
+            <div class="loading" id="loadingState">
+                <div class="spinner"></div>
+                <p>Processing your request...</p>
+            </div>
 
+            <!-- Search Results -->
+            {% if query %}
+            <div class="results-section slide-up">
+                <div class="results-header">
+                    <h2 class="results-title">Search Results</h2>
+                    <span class="results-count">{{ snippets|length }}</span>
+                </div>
+                {% if snippets %}
+                    {% for snippet, filename in snippets %}
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <a href="/files/{{ filename }}" target="_blank" class="result-filename">{{ filename }}</a>
+                        </div>
+                        <div class="result-content">{{ snippet | safe }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="empty-state-text">No results found</div>
+                        <div class="empty-state-subtext">Try adjusting your search terms</div>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Question Results -->
+            {% if question %}
+            <div class="results-section slide-up">
+                <div class="results-header">
+                    <h2 class="results-title">AI Answers</h2>
+                    <span class="results-count">{{ snippets|length }}</span>
+                </div>
+                {% if snippets %}
+                    {% for snippet, filename in snippets %}
+                    <div class="result-card">
+                        <div class="result-header">
+                            <div class="result-icon">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <a href="/files/{{ filename }}" target="_blank" class="result-filename">{{ filename }}</a>
+                        </div>
+                        <div class="result-content">{{ snippet | safe }}</div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">
+                            <i class="fas fa-question-circle"></i>
+                        </div>
+                        <div class="empty-state-text">No answers found</div>
+                        <div class="empty-state-subtext">Try rephrasing your question</div>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
     </div>
 
-    <!-- Bootstrap JS and dependencies -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script>
-        document.getElementById('toggle-files-button').addEventListener('click', function() {
-            const filesList = document.getElementById('files-list');
-            if (filesList.style.display === 'none') {
-                fetch('/files')
-                    .then(response => response.json())
-                    .then(data => {
-                        filesList.style.display = 'block';
-                        filesList.innerHTML = '';
-                        data.forEach(file => {
-                            const listItem = document.createElement('li');
-                            listItem.className = 'list-group-item';
-                            const link = document.createElement('a');
-                            link.href = `/files/${file}`;
-                            link.textContent = file;
-                            link.target = '_blank';
-                            listItem.appendChild(link);
-                            filesList.appendChild(listItem);
-                        });
-                        this.textContent = 'Hide Uploaded Files';
-                    });
-            } else {
-                filesList.style.display = 'none';
-                this.textContent = 'Show Uploaded Files';
+        // File upload drag and drop functionality
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const loadingState = document.getElementById('loadingState');
+
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.add('dragover');
+        });
+
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.classList.remove('dragover');
+        });
+
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                document.getElementById('uploadForm').submit();
             }
         });
 
+        // Show loading state on form submissions
+        document.getElementById('uploadForm').addEventListener('submit', () => {
+            loadingState.classList.add('show');
+        });
+
+        document.getElementById('searchForm').addEventListener('submit', () => {
+            loadingState.classList.add('show');
+        });
+
+        document.getElementById('askForm').addEventListener('submit', () => {
+            loadingState.classList.add('show');
+        });
+
+        // Smooth scroll to results
+        {% if query or question %}
+        setTimeout(() => {
+            document.querySelector('.results-section').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }, 100);
+        {% endif %}
     </script>
-
-
-    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
-
 </body>
 </html>
